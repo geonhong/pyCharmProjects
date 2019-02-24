@@ -483,10 +483,10 @@ class dashboard(object):
         with serial.Serial(self.portname, 9600) as s:
             while(True):
                 l = s.readline()
-                if len(l) > 10:
+                # print(l)
+                if len(l) > 1:
                     a = l.decode("utf-8").split('\t')
-                    if (a[0] == 'p' or a[0] == 'T' or
-                        a[0] == 'W' or a[0] == 'H'):
+                    if (a[0] == 'p' or a[0] == 'T' or a[0] == 'W'):
                         print(a)
                         break
         return a
@@ -501,13 +501,14 @@ class dashboard(object):
             if pValue != '':
                 self.setPMapColor(i-1, pValue)
 
-    def updateTemperatureData(self, temp):
-        s = str(temp) + ' ℃'
-        self.label_2.setText(_translate("Dialog", s))
+    def updateTempHumidData(self, l):
+        _translate = QtCore.QCoreApplication.translate
 
-    def updateHumidityData(self, humid):
-        s = str(humid) + ' %'
-        self.label_3.setText(_translate("Dialog", s))
+        tempStr = str(l[1]) + '\n℃'
+        self.label_2.setText(_translate("Dialog", tempStr))
+
+        humidStr = str(l[2]) + ' %'
+        self.label_3.setText(_translate("Dialog", humidStr))
 
     def updateWeightData(self, weight):
         # Append weight and data list
@@ -527,9 +528,7 @@ class dashboard(object):
         if l[0] == 'p':
             self.updatePressureData(l)
         elif l[0] == 'T':
-            self.updateTemperatureData(l[1])
-        elif l[0] == 'H':
-            self.updateHumidityData(l[1])
+            self.updateTempHumidData(l)
         elif l[0] == 'W':
             self.updateWeightData(l[1])
 
